@@ -14,6 +14,6 @@ include_once 'controller/Controller.php';
 class AppController extends Controller
 {
     public function index(){
-
+        return $this->view('index');
     }
 }
