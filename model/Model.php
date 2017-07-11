@@ -101,4 +101,5 @@ class Model
         $query .= ' where '.$this->table_id.'='.$id;
         $this->db->query($query);
     }
+
 }

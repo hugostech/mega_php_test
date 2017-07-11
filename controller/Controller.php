@@ -27,4 +27,10 @@ class Controller
             return 'Error in View Method';
         }
     }
+
+    /*
+     * redirect page to specific url*/
+    public function redirect($url){
+        header('Location: '.$url);
+    }
 }
