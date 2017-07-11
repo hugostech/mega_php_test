@@ -85,7 +85,7 @@ class Model
         $query = 'select * from '.$this->db_table;
         $query .= ' where '.$this->table_id.'='.$id;
         $result = $this->db->query($query);
-        $row = $result->fetch_row();
+        $row = $result->fetch_assoc();
         return $row;
 
     }
@@ -98,7 +98,7 @@ class Model
             $query .= "$key=\"$value\",";
         }
         $query = rtrim($query,',');
-        echo $query .= ' where '.$this->table_id.'='.$id;
+        $query .= ' where '.$this->table_id.'='.$id;
         $this->db->query($query);
     }
 

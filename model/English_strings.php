@@ -10,6 +10,7 @@ namespace hugo;
 
 include_once 'model/Model.php';
 include_once 'model/Translated_strings.php';
+include_once 'model/Broken_strings.php';
 
 class English_strings extends Model
 {
@@ -38,6 +39,15 @@ SCHEMA;
     public function translated_strings($id){
         $query = 'select * from translated_strings';
         $query .= ' where originalstringid='.$id;
+        $result = $this->db->query($query);
+        return $result->fetch_all(MYSQL_ASSOC);
+    }
+
+    /*
+    * find string by id and list all translated string for this string*/
+    public function broken_string($id){
+        $query = 'select * from broken_strings';
+        $query .= ' where status=1 and originalstringid='.$id;
         $result = $this->db->query($query);
         return $result->fetch_all(MYSQL_ASSOC);
     }
