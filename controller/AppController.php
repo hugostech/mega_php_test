@@ -11,11 +11,15 @@ namespace hugo;
 
 include_once 'controller/Controller.php';
 include_once 'model/English_strings.php';
+include_once 'config/app.php';
+include_once 'trait/helper.php';
 
 class AppController extends Controller
 {
+    use \utility;
     public function index(){
         $data = $this->generateTranslatedData();
+
         return $this->view('index',compact('data'));
     }
 
@@ -50,5 +54,59 @@ TABLE;
             }
         }
         return $data;
+    }
+
+    public function run($request){
+        $originaltext = $request['original_text'];
+        $english_string = new English_strings();
+        $original_id = $english_string->save_string($originaltext);
+        $this->randomTranslate($originaltext,$original_id);
+        return $this->index();
+    }
+
+    public function randomTranslate($string,$original_id){
+        $googleList = $this->getGoogleSupportList();
+        shuffle($googleList);
+        $translated = new Translated_strings();
+        foreach (range(0,4) as $i){
+            $translated_string = $this->translate($string,$googleList[$i]);
+            $translated->save_translatedtext($translated_string,$original_id,$googleList[$i]);
+        }
+    }
+
+
+    /*
+     * translate string by using google api*/
+    public function translate($string,$langcode){
+
+
+        $params = [
+            'source' => 'en',
+            'target' => $langcode,
+            'q' => $string,
+            'format'=>'text'
+        ];
+        global $config;
+        $url = 'https://www.googleapis.com/language/translate/v2?key='.$config['google_api_key'];
+        $result = $this->getContentByPostData($params,$url);
+        $result = json_decode($result,true);
+        $result = html_entity_decode($result['data']['translations'][0]['translatedText']);
+
+        return $result;
+    }
+
+    /*
+     * grab google translate support language*/
+    public function getGoogleSupportList(){
+        global $config;
+        $url = 'https://translation.googleapis.com/language/translate/v2/languages?key='.$config['google_api_key'];
+        $data = json_decode($this->getContent($url),true);
+        $data = $data['data']['languages'];
+        $list = array();
+
+        foreach ($data as $line){
+            $list[] = $line['language'];
+        }
+        return $list;
     }
 }

@@ -26,4 +26,9 @@ class Translated_strings extends Model
         ) ENGINE=InnoDB
 
 SCHEMA;
+
+    public function save_translatedtext($translatedtext,$originalstringid,$langcode){
+        $timestamp = time();
+        $this->insert(compact('translatedtext','originalstringid','langcode','timestamp'));
+    }
 }
