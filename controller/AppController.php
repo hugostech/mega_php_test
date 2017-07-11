@@ -14,6 +14,13 @@ include_once 'controller/Controller.php';
 class AppController extends Controller
 {
     public function index(){
-        return $this->view('index');
+        $data = $this->generateTranslatedData();
+        return $this->view('index',compact('data'));
+    }
+
+    /*
+     * to do: list original text, langcode and translated text table set data*/
+    public function generateTranslatedData(){
+        return 'Error';
     }
 }

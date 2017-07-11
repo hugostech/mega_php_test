@@ -8,7 +8,47 @@
 </head>
 <body>
     <div class="container">
-        <div class="col-md-12">It works</div>
+        <div class="col-md-12">
+            <form method="post" action="?route=run">
+                <div class="form-group">
+                    <label>Input String</label>
+                    <textarea name="original_text" rows="5" class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary btn-block" value="Run!">
+                </div>
+            </form>
+            <hr>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Original Text</th>
+                    <th>LangCode</th>
+                    <th>Translated Text</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @{{data}}
+                <tr>
+                    <form method="post" action="?route=update">
+                        <td>Original Text</td>
+                        <td>cn</td>
+                        <td><input type="text" name="translatedtext" value="etewtewrwre" class="form-control"></td>
+                        <td>
+
+                            <input type="hidden" name="originalstringid" value="1">
+                            <input type="hidden" name="translated_string_id" value="-1">
+                            <input type="hidden" name="langcode" value="cn">
+                            <input type="submit" value="Edit" class="btn btn-sm btn-primary">
+                        </td>
+                    </form>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </body>
 </html>
