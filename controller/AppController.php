@@ -34,8 +34,8 @@ class AppController extends Controller
                         <td><input type="text" name="translatedtext" value="%s" class="form-control"></td>
                         <td>
 
-                            <input type="hidden" name="originalstringid" value="%u">
-                            <input type="hidden" name="translated_string_id" value=%u">
+                            <input type="hidden" name="originalstringid" value=%u>
+                            <input type="hidden" name="translated_string_id" value=%u>
                             <input type="hidden" name="langcode" value="%s">
                             <input type="submit" value="Edit" class="btn btn-sm btn-primary">
                         </td>
@@ -64,16 +64,55 @@ TABLE;
         return $this->index();
     }
 
+    public function update($request){
+        $translated_string = new Translated_strings();
+        $translated_string->update_translatedtext($request['translatedtext'],$request['translated_string_id']);
+        return $this->index();
+    }
+
     public function randomTranslate($string,$original_id){
+        $tags = $this->detectTags($string);
         $googleList = $this->getGoogleSupportList();
         shuffle($googleList);
         $translated = new Translated_strings();
         foreach (range(0,4) as $i){
             $translated_string = $this->translate($string,$googleList[$i]);
-            $translated->save_translatedtext($translated_string,$original_id,$googleList[$i]);
+            if($this->matchTags($translated_string,$tags)){
+                $translated->save_translatedtext($translated_string,$original_id,$googleList[$i]);
+            }else{
+
+            }
+
         }
     }
 
+    /*
+     * check the tags if being changed*/
+    public function matchTags($string,$tags){
+        foreach ($tags as $tag) {
+            $tem = str_replace($tag, '', $string);
+            if ($tem == $string) {
+                return false;
+            }
+            $string = $tem;
+        }
+        return true;
+    }
+
+    /*
+     * find the tags in string*/
+    public function detectTags($string){
+
+        //ignore %1
+        preg_match_all('/%\d*\b/', $string,$matches1);
+
+        //ignore tag []
+        preg_match_all('/\[.*?\]/', $string,$matches2);
+
+        $result = array_merge_recursive($matches1[0],$matches2[0]);
+
+        return array_unique($result);
+    }
 
     /*
      * translate string by using google api*/

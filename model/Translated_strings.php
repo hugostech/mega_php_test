@@ -31,4 +31,10 @@ SCHEMA;
         $timestamp = time();
         $this->insert(compact('translatedtext','originalstringid','langcode','timestamp'));
     }
+
+    public function update_translatedtext($translatedtext,$id){
+        $timestamp = time();
+
+        $this->update(compact('translatedtext','timestamp'),$id);
+    }
 }

@@ -98,7 +98,7 @@ class Model
             $query .= "$key=\"$value\",";
         }
         $query = rtrim($query,',');
-        $query .= ' where '.$this->table_id.'='.$id;
+        echo $query .= ' where '.$this->table_id.'='.$id;
         $this->db->query($query);
     }
 
